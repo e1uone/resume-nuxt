@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
+import { resolve } from "path";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
@@ -15,6 +16,11 @@ export default defineNuxtConfig({
   css: ["~/assets/css/tailwind.css", "~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        html2canvas: resolve(__dirname, "node_modules/html2canvas-pro"),
+      },
+    },
   },
   colorMode: {
     classSuffix: "",
