@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  label: string;
+  label?: string;
   placeholder?: string;
   name: string;
   description?: string;
@@ -22,7 +22,7 @@ const textAreaAttrs = computed(() => {
 <template>
   <FormField v-slot="{ componentField }" :name="name">
     <FormItem v-auto-animate :class="formItemClass">
-      <FormLabel>{{ label }}</FormLabel>
+      <FormLabel v-if="label">{{ label }}</FormLabel>
       <FormControl>
         <Textarea
           :placeholder="placeholder"

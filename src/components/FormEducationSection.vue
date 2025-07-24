@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFieldArray } from "vee-validate";
+import { EDUCATION_DEFAULT } from "~/constants/educationDefault";
 
 const {
   fields: educationFields,
@@ -53,17 +54,7 @@ const {
         />
       </FormCard>
 
-      <Button
-        type="button"
-        @click="
-          pushEducationField({
-            yearOfAdmission: '',
-            yearOfGraduation: '',
-            university: '',
-            specialization: '',
-          })
-        "
-      >
+      <Button type="button" @click="pushEducationField(EDUCATION_DEFAULT)">
         Добавить
       </Button>
 

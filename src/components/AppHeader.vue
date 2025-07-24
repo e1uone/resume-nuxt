@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import { useTheme } from "@/composables/useTheme";
+const colorMode = useColorMode();
 
-const { theme, toggleTheme } = useTheme();
+const toggleTheme = () => {
+  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
+};
 </script>
 
 <template>
-  <header class="w-full flex justify-end mb-4 p-2">
+  <header class="w-full flex justify-between p-2">
+    <KCGLogo />
     <Button
       variant="ghost"
       size="sm"
       aria-label="Toggle theme"
       @click="toggleTheme"
     >
-      <IconLight v-if="theme === 'dark'" />
+      <IconLight v-if="colorMode.preference === 'dark'" />
       <IconDark v-else />
     </Button>
   </header>

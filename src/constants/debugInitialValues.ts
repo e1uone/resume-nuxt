@@ -1,0 +1,118 @@
+export const DEBUG_INITIAL_VALUES = {
+  candidateData: {
+    lastName: "Иванов",
+    firstName: "Иван",
+    surname: "Иванович",
+    candidate: "Иванов Иван Иванович",
+    phoneNumber: "+7 (999) 123-45-67",
+    email: "ivanov@example.com",
+  },
+
+  personalData: {
+    birthDate: "01.01.1990",
+    birthPlace: "г. Москва",
+    citizenship: "Российская Федерация",
+    fullNameChangeReason: "Не менял(а)",
+    passport: "4510 123456",
+    passportDate: "01.01.2010",
+    passportFrom: "ОУФМС России по г. Москве",
+    inn: "123456789012",
+    snils: "123-456-789 01",
+    militaryService: "Военнообязанный",
+    registrationAddress: "г. Москва, ул. Ленина, д. 1, кв. 1",
+    factAddress: "г. Москва, ул. Ленина, д. 1, кв. 1",
+  },
+
+  education: [
+    {
+      yearOfAdmission: "2008",
+      yearOfGraduation: "2013",
+      university: "МГУ им. М.В. Ломоносова",
+      specialization: "Прикладная информатика",
+    },
+  ],
+
+  additionalEducation:
+    'Курсы повышения квалификации по направлению "Анализ данных"',
+  foreignLanguage: "Английский (B2)",
+
+  workExperience: [
+    {
+      startDate: "01.06.2015",
+      endDate: "01.06.2025",
+      organization: 'ООО "ТехноПрофи"',
+      position: "Старший специалист по информационным системам",
+      address: "г. Москва, ул. Профсоюзная, д. 65",
+    },
+  ],
+
+  familyMembers: [
+    {
+      relativeDegree: "Супруга",
+      fullName: "Иванова Мария Петровна",
+      birthDate: "15.05.1992",
+      workPlace: 'ООО "МаркетингПро"',
+      position: "Маркетолог",
+      phoneNumber: "+7 (999) 987-65-43",
+      address: "г. Москва, ул. Ленина, д. 1, кв. 1",
+    },
+  ],
+
+  generalQuestions: {
+    individualEntrepreneur: "1",
+    criminalRecord: "1",
+    debt: "Нет",
+    relativesCriminalRecords: "Нет",
+    companyKnowledge: "Интересуюсь компанией давно, слежу за вакансиями",
+    vacancyQuestion: "Соответствие моим профессиональным навыкам и интересам",
+    skillsQuestion: "Анализ данных, работа с большими массивами информации",
+    readyDate: "1",
+    workingStyle: ["1", "2"],
+    workingCollective: "1",
+    workingCollectiveQuestion: "Ценю дружескую атмосферу и взаимопомощь",
+    teamworkPreference: "Умею находить общий язык с коллегами",
+    professionalGrowthOpportunities: ["1", "2"],
+    workChallenge: "Решение нестандартных задач",
+    conflictResolution: "Стремлюсь к конструктивному диалогу",
+    stressManagement: "Сохраняю спокойствие в сложных ситуациях",
+    keyAchievements:
+      "Автоматизировал процессы отчётности, что сократило время работы на 30%",
+    positionGoals: "Профессиональный рост в области анализа данных",
+  },
+
+  programSkills: {
+    wordLevel: "3",
+    excelLevel: "3",
+    powerpointLevel: "2",
+    googleSheetsLevel: "3",
+    adobeLevel: "1",
+    windowsLevel: "3",
+    bitrixLevel: "2",
+    consultantLevel: "1",
+    garantLevel: "1",
+    cryptoProLevel: "2",
+    wtvareLevel: "1",
+    icLevel: "3",
+    stakhanoveLevel: "3",
+    myWarehouseLevel: "2",
+    sqlLevel: "3",
+    cppLevel: "2",
+    generalLevel: "3",
+  },
+
+  ranking: {
+    location: "8",
+    finance: "5",
+    atmosphere: "8",
+    growth: "7",
+    workload: "3",
+    career: "5",
+    learning: "4",
+    reputation: "5",
+    dynamic: [
+      { label: "Зарплата", rank: "5" },
+      { label: "Карьера", rank: "4" },
+      { label: "Обучение", rank: "4" },
+    ],
+  },
+};

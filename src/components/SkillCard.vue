@@ -17,13 +17,13 @@ const levelOptions = [
 const levelColor = computed(() => {
   switch (model.value) {
     case "1":
-      return "bg-yellow-50 border-yellow-200";
+      return "bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800";
     case "2":
-      return "bg-blue-50 border-blue-200";
+      return "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800";
     case "3":
-      return "bg-green-50 border-green-200";
+      return "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800";
     default:
-      return "bg-gray-50 border-gray-200";
+      return "bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800";
   }
 });
 </script>

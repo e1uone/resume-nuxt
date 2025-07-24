@@ -14,71 +14,71 @@ const militaryServiceOptions = [
       <FormInput
         label="Дата рождения:"
         placeholder="Дата рождения:"
-        name="birthDate"
+        name="personalData.birthDate"
         class="md:col-span-1"
       />
       <FormInput
         label="Место рождения:"
         placeholder="Место рождения:"
-        name="birthPlace"
+        name="personalData.birthPlace"
         class="md:col-span-2"
       />
       <FormInput
         label="Гражданство (подданство). Если изменяли, то укажите, когда и по какой причине:"
         placeholder="Гражданство (подданство). Если изменяли, то укажите, когда и по какой причине:"
-        name="citizenship"
+        name="personalData.citizenship"
         class="md:col-span-3"
       />
       <FormInput
         label="Если изменяли фамилию, имя или отчество, то укажите их, а также когда, где и по какой причине:"
         placeholder="Если изменяли фамилию, имя или отчество, то укажите их, а также когда, где и по какой причине:"
-        name="fullNameChangeReason"
+        name="personalData.fullNameChangeReason"
         class="md:col-span-3"
       />
       <FormInput
         label="Паспорт (серия, номер):"
         placeholder="Паспорт (серия, номер):"
-        name="passport"
+        name="personalData.passport"
       />
       <FormInput
         label="Дата выдачи:"
         placeholder="Дата выдачи:"
-        name="passportDate"
+        name="personalData.passportDate"
       />
       <FormInput
         label="Кем выдан:"
         placeholder="Кем выдан:"
-        name="passportFrom"
+        name="personalData.passportFrom"
       />
       <FormInput
         label="ИНН:"
         placeholder="ИНН:"
-        name="inn"
+        name="personalData.inn"
         class="md:col-span-2"
       />
       <FormInput
         label="СНИЛС:"
         placeholder="СНИЛС:"
-        name="snils"
+        name="personalData.snils"
         class="md:col-span-1"
       />
       <FormSelect
         label="Отношение к воинской обязанности и воинское звание:"
         placeholder="Отношение к воинской обязанности и воинское звание:"
-        name="militaryService"
+        name="personalData.militaryService"
         class="md:col-span-3"
         :options="militaryServiceOptions"
       />
       <FormTextArea
         label="Адрес регистрации:"
         placeholder="Адрес регистрации:"
-        name="registrationAddress"
+        name="personalData.registrationAddress"
         class="md:col-span-3"
       />
       <FormTextArea
         label="Адрес фактического проживания:"
         placeholder="Адрес фактического проживания:"
-        name="factAddress"
+        name="personalData.factAddress"
         class="md:col-span-3"
       />
     </div>

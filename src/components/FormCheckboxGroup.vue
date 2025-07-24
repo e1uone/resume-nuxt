@@ -1,17 +1,20 @@
 <script setup lang="ts">
 const props = defineProps<{
   name: string;
-  label: string;
   options: { value: string; label: string }[];
+  label?: string;
+  description?: string;
 }>();
 </script>
 <template>
-  <FormField :name="props.name">
+  <FormField :name="props.name" type="checkbox">
     <FormItem>
       <div class="mb-4">
-        <FormLabel class="text-base">{{ props.label }}</FormLabel>
-        <FormDescription>
-          Select the options you want to display in the sidebar.
+        <FormLabel v-if="props.label" class="text-base">
+          {{ props.label }}
+        </FormLabel>
+        <FormDescription v-if="props.description">
+          {{ props.description }}
         </FormDescription>
       </div>
 
@@ -22,7 +25,7 @@ const props = defineProps<{
         type="checkbox"
         :value="option.value"
         :unchecked-value="false"
-        name="options"
+        :name="props.name"
       >
         <FormItem class="flex flex-row options-start space-x-3 space-y-0">
           <FormControl>

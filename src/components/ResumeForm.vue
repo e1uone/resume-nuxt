@@ -1,149 +1,82 @@
 <script setup lang="ts">
+import type { FormActionType } from "~/types/formActionType";
+import type { ResumeFormData } from "~/types/resumeFormData";
+
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import * as z from "zod";
-
+import { ref } from "vue";
+import DocumentTemplate from "~/components/document-template/DocumentTemplate.vue";
 import { toast } from "vue-sonner";
-import { FAMILY_MEMBERS_DEFAULT } from "~/constants/familyMembersDefault";
+import { DEBUG_INITIAL_VALUES } from "~/constants/debugInitialValues";
+import { RESUME_FORM_INITIAL_VALUES } from "~/constants/resumeFormInitialValues";
+import { RESUME_FORM_SCHEMA } from "~/constants/resumeFormSchema";
 
-const formSchema = toTypedSchema(
-  z.object({
-    lastName: z.string().min(2).max(50),
-    firstName: z.string().min(2).max(50),
-    surname: z.string().min(2).max(50),
-    candidate: z.string().min(2).max(50),
-    phoneNumber: z.string().min(2).max(50),
-    email: z.string().min(2).max(50),
-    birthDate: z.string().min(2).max(50),
-    birthPlace: z.string().min(2).max(50),
-    citizenship: z.string().min(2).max(50),
-    fullNameChangeReason: z.string().min(2).max(50),
-    passport: z.string().min(2).max(50),
-    passportDate: z.string().min(2).max(50),
-    passportFrom: z.string().min(2).max(50),
-    inn: z.string().min(2).max(50),
-    snils: z.string().min(2).max(50),
-    militaryService: z.string().min(1).max(50),
+const config = useRuntimeConfig();
+const isDevMode = config.app.buildId === "dev";
+const debugMode = ref<boolean>(localStorage.getItem("debugMode") === "true");
 
-    registrationAddress: z.string().min(2).max(50),
-    factAddress: z.string().min(2).max(50),
-    education: z.array(
-      z.object({
-        yearOfAdmission: z.string().min(2).max(50),
-        yearOfGraduation: z.string().min(2).max(50),
-        university: z.string().min(2).max(50),
-        specialization: z.string().min(2).max(50),
-      }),
-    ),
-    additionalEducation: z.string().min(2).max(50),
-    foreignLanguage: z.string().min(2).max(50),
-    workExperience: z.array(
-      z.object({
-        startDate: z.string().min(2).max(50),
-        endDate: z.string().min(2).max(50),
-        organization: z.string().min(2).max(50),
-        position: z.string().min(2).max(50),
-        address: z.string().min(2).max(50),
-      }),
-    ),
-    familyMembers: z.array(
-      z.object({
-        relativeDegree: z.string().min(2).max(50),
-        fullName: z.string().min(2).max(50),
-        birthDate: z.string().min(2).max(50),
-        workPlace: z.string().min(2).max(50),
-        position: z.string().min(2).max(50),
-        phoneNumber: z.string().min(2).max(50),
-        address: z.string().min(2).max(50),
-      }),
-    ),
-    programSkills: z.object({
-      wordLevel: z.string().optional(),
-      excelLevel: z.string().optional(),
-      powerpointLevel: z.string().optional(),
-      googleSheetsLevel: z.string().optional(),
-      adobeLevel: z.string().optional(),
-      windowsLevel: z.string().optional(),
-      bitrixLevel: z.string().optional(),
-      consultantLevel: z.string().optional(),
-      garantLevel: z.string().optional(),
-      cryptoProLevel: z.string().optional(),
-      wtvareLevel: z.string().optional(),
-      icLevel: z.string().optional(),
-      stakhanoveLevel: z.string().optional(),
-      myWarehouseLevel: z.string().optional(),
-      sqlLevel: z.string().optional(),
-      cppLevel: z.string().optional(),
-      generalLevel: z.string().optional(),
-    }),
-    workingStyle: z
-      .array(z.string())
-      .refine((value) => value.some((item) => item), {
-        message: "You have to select at least one item.",
-      }),
-  }),
-);
+type DocumentTemplateRef = {
+  saveToPdf: (data: ResumeFormData) => void;
+  print: (data: ResumeFormData) => void;
+  saveDocx: (data: ResumeFormData) => void;
+};
 
-const { handleSubmit } = useForm({
+const documentTemplateRef = ref<DocumentTemplateRef | null>(null);
+
+const formSchema = toTypedSchema(RESUME_FORM_SCHEMA);
+
+const formAction = ref<FormActionType>();
+
+const { resetForm, handleSubmit } = useForm({
   validationSchema: formSchema,
-  initialValues: {
-    education: [
-      {
-        yearOfAdmission: "",
-        yearOfGraduation: "",
-        university: "",
-        specialization: "",
-      },
-    ],
-    workExperience: [
-      {
-        startDate: "",
-        endDate: "",
-        organization: "",
-        position: "",
-        address: "",
-      },
-      {
-        startDate: "",
-        endDate: "",
-        organization: "",
-        position: "",
-        address: "",
-      },
-      {
-        startDate: "",
-        endDate: "",
-        organization: "",
-        position: "",
-        address: "",
-      },
-    ],
-    familyMembers: [FAMILY_MEMBERS_DEFAULT],
-  },
+  initialValues: debugMode.value
+    ? DEBUG_INITIAL_VALUES
+    : RESUME_FORM_INITIAL_VALUES,
 });
 
-const onSubmit = handleSubmit(
+const handleFormSubmit = handleSubmit(
   (values) => {
-    console.log(values);
-    toast("Event has been created", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
-      action: {
-        label: "Undo",
-        onClick: () => console.log("Undo"),
-      },
+    toast("Успешно!", {
+      description: "Документ подготавливается...",
     });
+
+    if (formAction.value === "pdf") {
+      documentTemplateRef.value?.saveToPdf(values);
+    }
+
+    // if (formAction.value === "word") {
+    //   documentTemplateRef.value?.saveDocx(values);
+    // }
+
+    // if (formAction.value === "print") {
+    //   documentTemplateRef.value?.print(values);
+    // }
   },
-  (values) => {
-    console.log(values);
-    toast("Error()", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
+  () => {
+    toast("Ошибка!", {
+      description:
+        "Пожалуйста, заполните все обязательные поля и проверьте их правильность",
     });
   },
 );
+
+const handleFormAction = (action: FormActionType) => {
+  if (action === "reset") {
+    resetForm();
+  } else {
+    formAction.value = action;
+    handleFormSubmit();
+  }
+};
+
+const toggleDebugMode = () => {
+  localStorage.setItem("debugMode", debugMode.value ? "false" : "true");
+  window.location.reload();
+};
 </script>
 
 <template>
-  <form class="space-y-6 py-4" @submit="onSubmit">
+  <form class="space-y-6 py-4" @submit.prevent>
     <p class="text-2xl text-center">Анкета Кандидата</p>
     <FormCandidatePhoto />
     <FormCandidateDataSection />
@@ -154,7 +87,10 @@ const onSubmit = handleSubmit(
     <FormGeneralQuestionsSection />
     <FormProgramSkillsSection />
     <FormRankingSection />
-
-    <Button type="submit">Submit</Button>
+    <FormActions @submit="handleFormAction" />
+    <Button v-if="isDevMode" @click="toggleDebugMode">
+      Debug Mode: {{ debugMode }}
+    </Button>
   </form>
+  <DocumentTemplate ref="documentTemplateRef" />
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-  <p class="company-data">
+  <p class="company-data text-[10pt]">
     Общество с ограниченной ответственностью "КАРТАС"
     <br />
     Юридический адрес: 141402, Московская область, г.о. Химки,
@@ -17,7 +17,6 @@
 </template>
 <style>
 .company-data {
-  font-size: 10pt;
   text-align: right;
 }
 </style>

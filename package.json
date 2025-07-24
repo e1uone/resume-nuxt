@@ -8,18 +8,22 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint . --ext .ts,.vue",
+    "lint": "eslint .",
     "lint:fix": "eslint . --ext .ts,.vue --fix",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
+    "@nuxtjs/color-mode": "3.5.2",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/vue-table": "^8.21.3",
     "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^13.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html2canvas-pro": "^1.5.11",
+    "i18next": "^25.3.2",
+    "jspdf": "^3.0.1",
     "lucide-vue-next": "^0.525.0",
     "nuxt": "^3.17.6",
     "reka-ui": "^2.3.2",
@@ -30,7 +34,8 @@
     "vue": "^3.5.17",
     "vue-router": "^4.5.1",
     "vue-sonner": "^2.0.1",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "zod-i18n-map": "^2.27.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.6.0",

@@ -1,10 +1,11 @@
-checkboxes
-removable cards
-stepper
-form actions
-validation
+stepper - NOT NEEDED
+checkboxes - DONE
+removable cards  - DONE
+form actions - DONE
+favicon - DONE
+site name - DONE
+dark theme - DONE
+validation - HALF DONE
+refactoring - HALF DONE
 print-document
-favicon
-logo
-refactoring
-
+save fields

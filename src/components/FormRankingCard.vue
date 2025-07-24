@@ -25,7 +25,7 @@ const options = Array.from({ length: 8 }, (_, i) => ({
       label=""
       placeholder="-"
       :options="options"
-      class="w-20"
+      class="w-30"
     />
     <Button
       v-if="props.removable"

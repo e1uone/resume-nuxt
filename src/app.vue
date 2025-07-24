@@ -5,9 +5,6 @@ import "vue-sonner/style.css";
 <template>
   <Toaster />
   <AppLayout>
-    <!-- <CompanyData /> -->
-    <FillDateLabel />
-    <HorizontalLine />
     <ResumeForm />
   </AppLayout>
 </template>

@@ -17,16 +17,6 @@ const { fields: workExperienceFields } = useFieldArray("workExperience");
         class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 items-start"
       >
         <FormInput
-          label="Дата начала"
-          placeholder="Дата начала"
-          :name="`workExperience.${index}.startDate`"
-        />
-        <FormInput
-          label="Дата окончания"
-          placeholder="Дата окончания"
-          :name="`workExperience.${index}.endDate`"
-        />
-        <FormInput
           label="Название организации"
           placeholder="Название организации"
           :name="`workExperience.${index}.organization`"
@@ -43,6 +33,16 @@ const { fields: workExperienceFields } = useFieldArray("workExperience");
           placeholder="Адрес"
           :name="`workExperience.${index}.address`"
           class="md:col-span-2"
+        />
+        <FormInput
+          label="Дата начала"
+          placeholder="Дата начала"
+          :name="`workExperience.${index}.startDate`"
+        />
+        <FormInput
+          label="Дата окончания"
+          placeholder="Дата окончания"
+          :name="`workExperience.${index}.endDate`"
         />
       </FormCard>
     </div>
