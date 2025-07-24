@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="text-center mb-6 pb-6 border-b-2 border-gray-200">
+  <section class="text-center mb-6 pb-6">
     <CompanyData class="mb-2" />
     <FillDateLabel class="mb-6" />
 
@@ -17,7 +17,7 @@ defineProps<{
       {{ resumeFormData.candidateData.surname }}
     </h1>
 
-    <div class="flex justify-center flex-wrap gap-4 mt-2">
+    <!-- <div class="flex justify-center flex-wrap gap-4 mt-2">
       <div
         v-if="resumeFormData.candidateData.phoneNumber"
         class="flex items-center"
@@ -29,6 +29,6 @@ defineProps<{
         <span class="mr-1">✉️</span>
         {{ resumeFormData.candidateData.email }}
       </div>
-    </div>
+    </div> -->
   </section>
 </template>

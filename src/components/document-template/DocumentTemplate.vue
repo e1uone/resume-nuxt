@@ -6,30 +6,23 @@ import DocumentEducationSection from "~/components/document-template/DocumentEdu
 import DocumentWorkExperienceSection from "~/components/document-template/DocumentWorkExperienceSection.vue";
 import DocumentFamilyMembersSection from "~/components/document-template/DocumentFamilyMembersSection.vue";
 import DocumentGeneralInformationSection from "~/components/document-template/DocumentGeneralInformationSection.vue";
-import { jsPDF } from "jspdf";
+import html2pdf from "html2pdf.js";
+import { HTML2CANVAS_SUPPORTED_PROPERTIES } from "~/constants/html2canvasSupportedProperties";
 
-// jsPDF options are now defined inline where used
 const resumeFormData = ref<ResumeFormData>();
+const resumeTemplateRef = useTemplateRef<HTMLDivElement>("resumeTemplateRef");
 
 const saveToPdf = async (data: ResumeFormData): Promise<void> => {
+  console.log("saving to pdf");
   resumeFormData.value = data;
   await nextTick();
 
-  const element = document.getElementById("resume-template");
+  const element = resumeTemplateRef.value;
+
   if (!element) {
     console.error("Element not found");
     return;
   }
-
-  const jsPdf = new jsPDF({
-    orientation: "portrait",
-    format: "a4",
-    unit: "mm",
-    compress: true,
-    putOnlyUsedFonts: true,
-  });
-
-  jsPdf.setFont("Times New Roman");
 
   const debugElement: HTMLElement | null = document.querySelector("#debug");
 
@@ -38,20 +31,41 @@ const saveToPdf = async (data: ResumeFormData): Promise<void> => {
     return;
   }
 
-  // A4 size is 210mm × 297mm
-  jsPdf.html(element, {
-    callback: function (doc: jsPDF) {
-      doc.save("Test.pdf");
-    },
-    margin: [20, 20, 20, 20],
-    width: 170, // 210mm - 40mm margins
-    windowWidth: 794, // A4 width in pixels at 96 DPI
-    // autoPaging: "text",
-
-    html2canvas: {
-      logging: false,
-    },
+  // convert computed styles to inline styles
+  computedStyleToInlineStyle(element, {
+    recursive: true,
+    properties: HTML2CANVAS_SUPPORTED_PROPERTIES,
+    // prettier-ignore
+    excludeProperties: [
+          'width', 'height',
+          'max-width', 'min-width',
+          // 'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+          // 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+          // 'box-sizing',
+          // 'position', 'right', 'left', 'top', 'bottom'
+    ],
   });
+
+  // A4 size is 210mm x 297mm
+  const options = {
+    margin: 20,
+    pagebreak: {
+      mode: ["avoid-all", "css"],
+    },
+    filename: "test.pdf",
+    image: { type: "jpeg", quality: 0.5 },
+    html2canvas: {
+      scale: 2,
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
+      compress: true, // why is this not working as expected :?
+    },
+  };
+
+  html2pdf().set(options).from(element).save();
 };
 
 const print = (data: ResumeFormData) => {
@@ -73,9 +87,9 @@ defineExpose({ saveToPdf, print, saveDocx });
 </script>
 
 <template>
-  <div id="debug">
-    <div>Hello world</div>
-    <div>
+  <div id="debug" class="debug-container">
+    <h1 class="text-3xl">Hello world</h1>
+    <div class="debug-text text-right">
       Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi nulla quod
       molestiae in ad accusantium deserunt assumenda. Excepturi cupiditate
       voluptatum reiciendis hic, rerum asperiores ratione maxime cumque, earum
@@ -395,86 +409,44 @@ defineExpose({ saveToPdf, print, saveDocx });
     </div>
   </div>
   <div
-    id="resume-template"
-    class="w-[210mm] min-h-[297mm] mx-auto bg-white shadow-lg p-[25mm] box-border"
+    ref="resumeTemplateRef"
+    class="resume-template w-[210mm] max-w-[100%] min-h-[297mm] mx-auto bg-white shadow-lg"
   >
-    <div v-if="resumeFormData" class="max-w-[160mm] mx-auto">
-      <!-- Header Section -->
-      <div class="resume-section">
-        <DocumentHeaderSection :resume-form-data="resumeFormData" />
-      </div>
-      <!-- Personal Information -->
-      <div class="resume-section">
-        <DocumentPersonalInformation :resume-form-data="resumeFormData" />
-      </div>
+    <template v-if="resumeFormData">
+      <DocumentHeaderSection :resume-form-data="resumeFormData" />
+      <DocumentPersonalInformation :resume-form-data="resumeFormData" />
+      <DocumentEducationSection :resume-form-data="resumeFormData" />
+      <DocumentWorkExperienceSection :resume-form-data="resumeFormData" />
+      <DocumentFamilyMembersSection :resume-form-data="resumeFormData" />
+      <DocumentGeneralInformationSection :resume-form-data="resumeFormData" />
+      <DocumentProgramSkillsSection :resume-form-data="resumeFormData" />
+      <DocumentRankingSection :resume-form-data="resumeFormData" />
 
-      <!-- Education Section -->
-      <div class="resume-section">
-        <DocumentEducationSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Work Experience Section -->
-      <div class="resume-section">
-        <DocumentWorkExperienceSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Family Members Section -->
-      <div class="resume-section">
-        <DocumentFamilyMembersSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Additional Information Section -->
-      <div class="resume-section">
-        <DocumentGeneralInformationSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Program Skills Section -->
-      <div class="resume-section">
-        <DocumentProgramSkillsSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Ranking Section -->
-      <div class="resume-section">
-        <DocumentRankingSection :resume-form-data="resumeFormData" />
-      </div>
-
-      <!-- Signature Field -->
       <div class="flex justify-between">
         <DocumentSignatureField />
         <DocumentSignatureField />
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
-<style>
-#debug {
+<style scoped>
+.debug-container {
   font-size: 14pt;
 }
 
-/* TODO: remove
- @page {
-  size: A4;
-  margin: 40mm !important;
-  font-size: 40mm !important;
-  * {
-    font-size: 40mm !important;
-  }
-} */
-
-/* Only keep print-specific styles here
-@media print {
-  .resume-container {
-    box-shadow: none;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-  }
+.debug-heading {
+  font-size: 18pt;
+  font-weight: bold;
+  /* break-after: page; */
 }
-  */
+
+.debug-text {
+  font-weight: normal;
+  page-break-inside: avoid;
+}
+
+.resume-template {
+  font-family: "Times New Roman", Times, serif;
+}
 </style>

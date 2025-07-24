@@ -7,4 +7,3 @@ const currentDate = new Date().toLocaleDateString("ru");
     {{ currentDate }}
   </p>
 </template>
-<style></style>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FormActionType } from "~/types/formActionType";
-import type { ResumeFormData } from "~/types/resumeFormData";
+import type FormActions from "~/components/FormActions.vue";
 
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import DocumentTemplate from "~/components/document-template/DocumentTemplate.vue";
 import { toast } from "vue-sonner";
 import { DEBUG_INITIAL_VALUES } from "~/constants/debugInitialValues";
@@ -15,13 +15,11 @@ const config = useRuntimeConfig();
 const isDevMode = config.app.buildId === "dev";
 const debugMode = ref<boolean>(localStorage.getItem("debugMode") === "true");
 
-type DocumentTemplateRef = {
-  saveToPdf: (data: ResumeFormData) => void;
-  print: (data: ResumeFormData) => void;
-  saveDocx: (data: ResumeFormData) => void;
-};
+const documentTemplateRef = useTemplateRef<typeof DocumentTemplate>(
+  "documentTemplateRef",
+);
 
-const documentTemplateRef = ref<DocumentTemplateRef | null>(null);
+const formActionsRef = useTemplateRef<typeof FormActions>("formActionsRef");
 
 const formSchema = toTypedSchema(RESUME_FORM_SCHEMA);
 
@@ -41,6 +39,7 @@ const handleFormSubmit = handleSubmit(
     });
 
     if (formAction.value === "pdf") {
+      console.log(documentTemplateRef.value);
       documentTemplateRef.value?.saveToPdf(values);
     }
 
@@ -73,6 +72,14 @@ const toggleDebugMode = () => {
   localStorage.setItem("debugMode", debugMode.value ? "false" : "true");
   window.location.reload();
 };
+
+onMounted(() => {
+  if (debugMode.value === true) {
+    formActionsRef.value?.$el.scrollIntoView({
+      block: "center",
+    });
+  }
+});
 </script>
 
 <template>
@@ -87,7 +94,7 @@ const toggleDebugMode = () => {
     <FormGeneralQuestionsSection />
     <FormProgramSkillsSection />
     <FormRankingSection />
-    <FormActions @submit="handleFormAction" />
+    <FormActions ref="formActionsRef" @submit="handleFormAction" />
     <Button v-if="isDevMode" @click="toggleDebugMode">
       Debug Mode: {{ debugMode }}
     </Button>

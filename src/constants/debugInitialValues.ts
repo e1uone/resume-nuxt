@@ -30,6 +30,24 @@ export const DEBUG_INITIAL_VALUES = {
       university: "МГУ им. М.В. Ломоносова",
       specialization: "Прикладная информатика",
     },
+    {
+      yearOfAdmission: "2013",
+      yearOfGraduation: "2016",
+      university: "МГИМО",
+      specialization: "Информатика",
+    },
+    {
+      yearOfAdmission: "2016",
+      yearOfGraduation: "2020",
+      university: "МГИМО",
+      specialization: "Компьютерная безопасность",
+    },
+    {
+      yearOfAdmission: "2020",
+      yearOfGraduation: "2024",
+      university: "МГИМО",
+      specialization: "Я не знаю",
+    },
   ],
 
   additionalEducation:
@@ -37,6 +55,20 @@ export const DEBUG_INITIAL_VALUES = {
   foreignLanguage: "Английский (B2)",
 
   workExperience: [
+    {
+      startDate: "01.06.2015",
+      endDate: "01.06.2025",
+      organization: 'ООО "ТехноПрофи"',
+      position: "Старший специалист по информационным системам",
+      address: "г. Москва, ул. Профсоюзная, д. 65",
+    },
+    {
+      startDate: "01.06.2015",
+      endDate: "01.06.2025",
+      organization: 'ООО "ТехноПрофи"',
+      position: "Старший специалист по информационным системам",
+      address: "г. Москва, ул. Профсоюзная, д. 65",
+    },
     {
       startDate: "01.06.2015",
       endDate: "01.06.2025",
