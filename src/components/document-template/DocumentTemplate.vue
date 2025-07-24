@@ -10,23 +10,200 @@ import DocumentGeneralInformationSection from "~/components/document-template/Do
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
 
-const jsPdfOptions = {
-  unit: "mm" as const,
-  orientation: "portrait" as const,
-  format: "a4",
-};
+// jsPDF options are now defined inline where used
 
 const resumeFormData = ref<ResumeFormData>();
 
-const saveToPdf = async (data: ResumeFormData) => {
+// Type for html2canvas options
+type Html2CanvasOptions = {
+  scale: number;
+  useCORS: boolean;
+  allowTaint: boolean;
+  width: number;
+  windowWidth: number;
+  scrollX: number;
+  scrollY: number;
+  backgroundColor: string | null;
+  removeContainer: boolean;
+  foreignObjectRendering: boolean;
+  logging: boolean;
+  onclone?: (document: Document, element: HTMLElement) => void;
+};
+
+// Function to copy computed styles from source to target element
+const copyComputedStyles = (source: HTMLElement, target: HTMLElement) => {
+  // List of style properties to copy
+  const styleProps = [
+    "color",
+    "background-color",
+    "font-size",
+    "font-family",
+    "font-weight",
+    "line-height",
+    "text-align",
+    "padding",
+    "margin",
+    "border",
+    "border-radius",
+    "width",
+    "height",
+    "display",
+    "flex-direction",
+    "justify-content",
+    "align-items",
+    "gap",
+    "flex-wrap",
+    "flex",
+    "flex-grow",
+    "flex-shrink",
+    "border-bottom",
+    "border-top",
+    "border-left",
+    "border-right",
+    "border-color",
+    "border-width",
+    "border-style",
+    "background",
+    "box-shadow",
+    "text-decoration",
+    "text-transform",
+    "white-space",
+    "word-break",
+    "overflow",
+    "position",
+    "top",
+    "left",
+    "right",
+    "bottom",
+    "z-index",
+    "opacity",
+    "visibility",
+    "box-sizing",
+    "grid-template-columns",
+    "grid-template-rows",
+    "grid-column",
+    "grid-row",
+    "grid-area",
+    "gap",
+    "row-gap",
+    "column-gap",
+  ];
+
+  const computedStyle = window.getComputedStyle(source);
+
+  // Apply only the styles we care about
+  styleProps.forEach((prop) => {
+    const value = computedStyle.getPropertyValue(prop);
+    if (value) {
+      target.style.setProperty(
+        prop,
+        value,
+        computedStyle.getPropertyPriority(prop),
+      );
+    }
+  });
+
+  // Process child elements
+  for (let i = 0; i < source.children.length; i++) {
+    const sourceChild = source.children[i];
+    const targetChild = target.children[i];
+    if (
+      sourceChild &&
+      targetChild &&
+      sourceChild instanceof HTMLElement &&
+      targetChild instanceof HTMLElement
+    ) {
+      copyComputedStyles(sourceChild, targetChild);
+    }
+  }
+};
+
+// Helper function to get element's height in mm
+const getElementHeight = (element: HTMLElement, width: number) => {
+  const clone = element.cloneNode(true) as HTMLElement;
+
+  // Create a container to properly measure the element
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.visibility = "hidden";
+  container.style.width = `${width}mm`;
+  container.style.pointerEvents = "none";
+  container.style.contain = "layout style paint";
+
+  // Add the clone to the container
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  // Copy computed styles to ensure Tailwind classes are applied
+  copyComputedStyles(element, clone);
+
+  // Force layout calculation
+  const height = clone.offsetHeight;
+
+  // Clean up
+  document.body.removeChild(container);
+
+  // Convert pixels to mm (1mm ≈ 3.78px at 96dpi)
+  return height / 3.78;
+};
+
+// Function to split content that would overflow the page
+const splitContent = async (
+  element: HTMLElement,
+  maxHeight: number,
+  contentWidth: number,
+  _pageHeight: number, // Unused parameter
+  _margin: number, // Unused parameter
+) => {
+  const sections: HTMLElement[] = [];
+  let currentSection: HTMLElement | null = null;
+  let currentHeight = 0;
+
+  // Process each child element
+  for (let i = 0; i < element.children.length; i++) {
+    const child = element.children[i] as HTMLElement;
+    if (!child.textContent?.trim()) continue;
+
+    const childHeight = getElementHeight(child, contentWidth);
+
+    // If this is the first element or adding this child would exceed the page
+    if (!currentSection || currentHeight + childHeight > maxHeight) {
+      // If we have a current section, push it to sections
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+
+      // Create a new section with proper styling
+      currentSection = document.createElement("div");
+      currentSection.className = "resume-section";
+      currentSection.style.width = `${contentWidth}mm`;
+      currentSection.style.margin = "0";
+      currentSection.style.padding = "0";
+      currentSection.style.boxSizing = "border-box";
+      currentHeight = 0;
+    }
+
+    // Clone the child and copy its styles
+    const childClone = child.cloneNode(true) as HTMLElement;
+    copyComputedStyles(child, childClone);
+
+    // Add the cloned child to the current section
+    currentSection.appendChild(childClone);
+    currentHeight += childHeight;
+  }
+
+  // Add the last section if it's not empty
+  if (currentSection && currentSection.children.length > 0) {
+    sections.push(currentSection);
+  }
+
+  return sections;
+};
+
+const saveToPdf = async (data: ResumeFormData): Promise<void> => {
   try {
     resumeFormData.value = data;
-
-    // Wait for the next tick to ensure DOM is updated
     await nextTick();
-
-    // Add a small delay to ensure all assets are loaded
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const element = document.getElementById("resume-template");
     if (!element) {
@@ -34,201 +211,258 @@ const saveToPdf = async (data: ResumeFormData) => {
       return;
     }
 
-    const pdfDoc = new jsPDF(jsPdfOptions);
-    const pageWidth = pdfDoc.internal.pageSize.getWidth();
-    const pageHeight = pdfDoc.internal.pageSize.getHeight();
-    const margin = 10; // 10mm margin
-    const contentWidth = pageWidth - 2 * margin;
+    // Set up PDF document with A4 dimensions (210mm x 297mm)
+    const pdfDoc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true,
+    });
 
-    // Get all section elements
-    const sections = Array.from(element.querySelectorAll(".resume-section"));
+    const _pageWidth = pdfDoc.internal.pageSize.getWidth(); // 210mm
+    const pageHeight = pdfDoc.internal.pageSize.getHeight(); // 297mm
+    const margin = 15; // 15mm margins
+    const contentWidth = 180; // Fixed width to ensure consistent rendering
+    const maxContentHeight = pageHeight - 2 * margin;
 
     // Create a temporary container for rendering
     const tempContainer = document.createElement("div");
-    tempContainer.style.position = "absolute";
-    tempContainer.style.left = "-9999px";
-    tempContainer.style.top = "0";
-    tempContainer.style.width = `${contentWidth}mm`;
-    tempContainer.style.background = "white";
-    tempContainer.style.padding = "20px";
-    tempContainer.style.boxSizing = "border-box";
+    Object.assign(tempContainer.style, {
+      position: "absolute",
+      left: "-9999px",
+      top: "0",
+      width: `${contentWidth}mm`,
+      background: "white",
+      padding: "20px",
+      boxSizing: "border-box",
+    });
     document.body.appendChild(tempContainer);
 
     let currentY = margin;
     let currentPage = 0;
 
-    const addNewPage = () => {
+    const addNewPage = (): void => {
       if (currentPage > 0) {
         pdfDoc.addPage();
+      } else {
+        currentPage = 1;
       }
       currentY = margin;
-      currentPage++;
     };
 
     // Add first page
     addNewPage();
 
     // Process each section
+    const sections = Array.from(
+      element.querySelectorAll<HTMLElement>(".resume-section"),
+    );
     for (const section of sections) {
       if (!section.textContent?.trim()) continue;
 
-      // Clone the section and append to temp container
+      // Clone the section for processing
       const sectionClone = section.cloneNode(true) as HTMLElement;
-      tempContainer.innerHTML = "";
 
-      // Function to copy only the necessary computed styles
-      const copyComputedStyles = (source: HTMLElement, target: HTMLElement) => {
-        // Only copy specific style properties that we need
-        const styleProps = [
-          "color",
-          "background-color",
-          "font-size",
-          "font-family",
-          "font-weight",
-          "line-height",
-          "text-align",
-          "padding",
-          "margin",
-          "border",
-          "border-radius",
-          "width",
-          "height",
-          "display",
-          "flex-direction",
-          "justify-content",
-          "align-items",
-          "gap",
-          "flex-wrap",
-          "flex",
-          "flex-grow",
-          "flex-shrink",
-          "border-bottom",
-          "border-top",
-          "border-left",
-          "border-right",
-          "border-color",
-          "border-width",
-          "border-style",
-        ];
-
-        const computedStyle = window.getComputedStyle(source);
-
-        // Apply only the styles we care about
-        styleProps.forEach((prop) => {
-          const value = computedStyle.getPropertyValue(prop);
-          if (value) {
-            target.style.setProperty(
-              prop,
-              value,
-              computedStyle.getPropertyPriority(prop),
-            );
-          }
-        });
-
-        // Process child elements
-        for (let i = 0; i < source.children.length; i++) {
-          const sourceChild = source.children[i];
-          const targetChild = target.children[i];
-          if (
-            sourceChild &&
-            targetChild &&
-            sourceChild instanceof HTMLElement &&
-            targetChild instanceof HTMLElement
-          ) {
-            copyComputedStyles(sourceChild, targetChild);
-          }
-        }
-      };
-
-      // Add the clone to the document to compute styles
-      const tempStyleContainer = document.createElement("div");
-      tempStyleContainer.style.visibility = "hidden";
-      tempStyleContainer.style.position = "absolute";
-      document.body.appendChild(tempStyleContainer);
-      tempStyleContainer.appendChild(sectionClone);
-
-      // Force layout calculation
-      void sectionClone.offsetHeight;
-
-      // Copy the computed styles with proper type assertion
-      copyComputedStyles(section as HTMLElement, sectionClone);
-
-      // Clean up
-      document.body.removeChild(tempStyleContainer);
-
-      // Reset any problematic styles that might hide the content
-      sectionClone.style.visibility = "";
-      sectionClone.style.position = "";
-      sectionClone.style.top = "";
-
-      // Add to temp container
-      tempContainer.appendChild(sectionClone);
-
-      // Add a small delay to ensure rendering
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Add a small delay to ensure all styles are applied
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // Render section to canvas with minimal processing
-      const canvas = await html2canvas(tempContainer, {
-        scale: 2,
-        logging: true,
-        useCORS: true,
-        allowTaint: true,
-        width: contentWidth * 3.78,
-        windowWidth: 1200,
-        scrollX: 0,
-        scrollY: 0,
-        // Disable html2canvas's built-in style processing
-        ignoreElements: () => false,
-        backgroundColor: null,
-        removeContainer: true,
-        foreignObjectRendering: false,
-        onclone: (clonedDoc) => {
-          // Force layout calculation
-          const offset = clonedDoc.body.offsetHeight;
-          return offset;
-        },
-      });
-
-      // Calculate dimensions
-      const imgData = canvas.toDataURL("image/png");
-      const imgHeight = (canvas.height * contentWidth) / canvas.width;
-
-      // Check if we need a new page for this section
-      if (currentY + imgHeight > pageHeight - margin) {
-        addNewPage();
-      }
-
-      // Add section to PDF
-      pdfDoc.addImage(
-        imgData,
-        "PNG",
-        margin,
-        currentY,
+      // Split the section into parts that fit on a single page
+      const sectionParts = await splitContent(
+        sectionClone,
+        maxContentHeight,
         contentWidth,
-        imgHeight,
-        undefined,
-        "FAST",
+        pageHeight,
+        margin,
       );
 
-      // Update current Y position
-      currentY += imgHeight + 10; // Add some space between sections
+      // Process each part of the section
+      for (const part of sectionParts) {
+        tempContainer.innerHTML = "";
 
-      // Add page break if we're close to the bottom
-      if (currentY > pageHeight - 20) {
-        addNewPage();
+        // Create a wrapper to ensure proper styling
+        const wrapper = document.createElement("div");
+        Object.assign(wrapper.style, {
+          width: `${contentWidth}mm`,
+          boxSizing: "border-box",
+        });
+
+        wrapper.appendChild(part);
+        tempContainer.appendChild(wrapper);
+
+        // Ensure all styles are applied
+        copyComputedStyles(part, wrapper);
+
+        // Add a small delay to ensure rendering
+        await new Promise<void>((resolve) => setTimeout(resolve, 50));
+
+        // Make the container visible temporarily for rendering
+        tempContainer.style.visibility = "visible";
+        tempContainer.style.opacity = "1";
+        tempContainer.style.position = "absolute";
+        tempContainer.style.left = "0";
+        tempContainer.style.top = "0";
+        tempContainer.style.width = `${contentWidth}mm`;
+        tempContainer.style.background = "#ffffff";
+        tempContainer.style.zIndex = "9999";
+
+        // Calculate dimensions for better quality rendering
+        const targetDpi = 300; // Target DPI for better quality
+        const scale = targetDpi / 96; // Scale factor based on standard 96dpi
+
+        // Calculate pixel dimensions
+        const mmToPx = 3.78; // Conversion factor from mm to pixels at 96dpi
+        const _pixelWidth = contentWidth * mmToPx * (targetDpi / 96); // Keep for future use
+
+        // Set container width to match content width
+        tempContainer.style.width = `${contentWidth}mm`;
+        tempContainer.style.maxWidth = `${contentWidth}mm`;
+        tempContainer.style.overflow = "hidden"; // Prevent any content from overflowing
+
+        // Render to canvas with optimized settings
+        const options: Html2CanvasOptions = {
+          scale: scale, // Use calculated scale for better quality
+          useCORS: true,
+          allowTaint: true,
+          width: contentWidth * mmToPx, // Base width at 96dpi
+          windowWidth: 1200,
+          scrollX: 0,
+          scrollY: 0,
+          backgroundColor: "#FFFFFF",
+          removeContainer: false,
+          foreignObjectRendering: true, // Better for text rendering
+          logging: true, // Keep logging for debugging
+          // Remove unsupported options that might cause issues
+          // dpi and letterRendering are not standard html2canvas options
+          // and can be handled through CSS instead
+          onclone: (clonedDoc: Document, element: HTMLElement) => {
+            // Apply styles to ensure proper rendering
+            const elements = element.querySelectorAll("*");
+            elements.forEach((el) => {
+              if (el instanceof HTMLElement) {
+                // Skip hidden elements
+                const style = window.getComputedStyle(el);
+                // Type-safe check for hidden property
+                const isHidden =
+                  "hidden" in el && typeof el.hidden === "boolean"
+                    ? el.hidden
+                    : false;
+
+                if (
+                  style.display === "none" ||
+                  style.visibility === "hidden" ||
+                  style.opacity === "0" ||
+                  isHidden
+                ) {
+                  return;
+                }
+
+                // Copy computed styles
+                copyComputedStyles(el, el);
+
+                // Ensure visibility and proper rendering
+                el.style.visibility = "visible";
+                el.style.opacity = "1";
+                el.style.boxSizing = "border-box";
+
+                // Force repaint for better rendering
+                void el.offsetHeight;
+              }
+            });
+
+            // Add print-specific styles
+            const style = document.createElement("style");
+            style.textContent = `
+              @media print {
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                  color-adjust: exact !important;
+                }
+              }
+              body, html {
+                width: ${contentWidth}mm !important;
+                min-height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                background: white !important;
+              }
+              * {
+                box-sizing: border-box;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+              }
+            `;
+            clonedDoc.head.appendChild(style);
+          },
+        };
+
+        // Render to canvas
+        const canvas = await html2canvas(tempContainer, options);
+
+        // Verify canvas has content
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+          throw new Error("Canvas rendered with zero dimensions");
+        }
+
+        // Calculate dimensions maintaining aspect ratio
+        const imgData = canvas.toDataURL("image/png", 1.0);
+
+        // Calculate height to maintain aspect ratio with content width
+        const aspectRatio = canvas.height / canvas.width;
+        const finalHeight = contentWidth * aspectRatio;
+
+        // Ensure minimum height
+        const minHeight = 10; // 10mm minimum height
+        const finalHeightWithMin = Math.max(finalHeight, minHeight);
+
+        // Add new page if needed, ensuring we don't exceed page height
+        if (currentY + finalHeightWithMin > pageHeight - margin) {
+          addNewPage();
+        }
+
+        // Add image to PDF with proper dimensions and settings
+        // Add image to PDF with exact dimensions
+        pdfDoc.addImage(
+          imgData,
+          "PNG",
+          margin,
+          currentY,
+          contentWidth,
+          finalHeightWithMin,
+          undefined,
+          "FAST",
+        );
+
+        // Update current Y position with small gap
+        currentY += finalHeightWithMin + 5; // 5mm gap between sections
+
+        // Add new page if we're close to the bottom
+        if (currentY > pageHeight - 30) {
+          addNewPage();
+        }
       }
     }
 
     // Clean up
-    document.body.removeChild(tempContainer);
+    try {
+      if (document.body.contains(tempContainer)) {
+        document.body.removeChild(tempContainer);
+      }
+    } catch (e) {
+      console.warn("Error during cleanup:", e);
+    }
 
     // Save the PDF
-    pdfDoc.save("resume.pdf");
+    try {
+      pdfDoc.save("resume.pdf");
+    } catch (e) {
+      console.error("Error saving PDF:", e);
+      throw e;
+    }
   } catch (error) {
     console.error("Error generating PDF:", error);
+    throw error; // Re-throw to allow error handling by the caller
   }
 };
 
