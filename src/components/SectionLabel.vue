@@ -4,8 +4,6 @@ interface Props {
   label: string;
 }
 
-const asd = "asd";
-
 const props = defineProps<Props>();
 </script>
 
