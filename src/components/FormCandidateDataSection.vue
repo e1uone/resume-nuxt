@@ -2,9 +2,17 @@
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-4 items-start">
-    <FormInput label="Фамилия" placeholder="Фамилия" name="candidateData.lastName" />
+    <FormInput
+      label="Фамилия"
+      placeholder="Фамилия"
+      name="candidateData.lastName"
+    />
     <FormInput label="Имя" placeholder="Имя" name="candidateData.firstName" />
-    <FormInput label="Отчество" placeholder="Отчество" name="candidateData.surname" />
+    <FormInput
+      label="Отчество"
+      placeholder="Отчество"
+      name="candidateData.surname"
+    />
     <FormInput
       label="Кандидат на должность"
       placeholder="Кандидат на должность"

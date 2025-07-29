@@ -12,12 +12,4 @@
   margin: 0 auto;
   position: relative;
 }
-/*TODO:*/
-/* .app-layout {
-    width: 21cm;
-    min-height: 29.7cm;
-    margin: 0 auto;
-    padding: 1.5cm;
-    position: relative;
-} */
 </style>

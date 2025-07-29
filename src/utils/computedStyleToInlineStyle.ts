@@ -21,7 +21,6 @@ export default function computedStyleToInlineStyle(
   }
 
   const computedStyle = getComputedStyle(element);
-  console.log(computedStyle);
   const excludeProperties = new Set(options?.excludeProperties || []);
 
   Array.prototype.forEach.call(

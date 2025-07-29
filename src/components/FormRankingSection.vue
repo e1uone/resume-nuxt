@@ -13,7 +13,9 @@ const { fields, push, remove } = useFieldArray<{ label: string; rank: string }>(
 const addFactorLabel = ref("");
 
 const addFactor = () => {
-  if (!addFactorLabel.value.trim()) return;
+  if (!addFactorLabel.value.trim()) {
+    return;
+  }
   push({ label: addFactorLabel.value.trim(), rank: "" });
   addFactorLabel.value = "";
 };

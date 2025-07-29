@@ -1,5 +1,14 @@
 import { z } from "~/utils/zod";
 
+// PDF size is not dependent on image size
+// const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
 export const RESUME_FORM_SCHEMA = z.object({
   candidateData: z.object({
     lastName: z.string().max(50),
@@ -8,6 +17,17 @@ export const RESUME_FORM_SCHEMA = z.object({
     candidate: z.string().max(50),
     phoneNumber: z.string().max(50),
     email: z.string().max(50),
+    photo: z
+      .any()
+      .optional()
+      // .refine(
+      //   (file) => !file || file.size <= MAX_FILE_SIZE,
+      //   `Максимальный размер картинки 5MByte.`,
+      // )
+      .refine(
+        (file) => !file || ACCEPTED_IMAGE_MIME_TYPES.includes(file.type),
+        "Поддерживаются только .jpg, .jpeg, .png и .webp форматы.",
+      ),
   }),
 
   personalData: z.object({

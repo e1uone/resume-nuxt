@@ -8,7 +8,7 @@ const emit = defineEmits<{
 const handleAction = (type: FormActionType) => {
   emit("submit", type);
 };
-// TODO: save to word and print
+// TODO: save to docx and print
 </script>
 
 <template>

@@ -132,14 +132,13 @@ const getOptionLabel = (
           :key="index"
         >
           {{ getOptionLabel(WORKING_STYLE_OPTIONS, style) }}
+          <span
+            v-if="getOptionLabel(WORKING_STYLE_OPTIONS, style) === 'Другое'"
+          >
+            - {{ resumeFormData.generalQuestions.workingStyleOther }}
+          </span>
         </li>
       </ul>
-      <p
-        v-if="resumeFormData.generalQuestions.workingStyleOther"
-        class="text-gray-700 mt-2"
-      >
-        Другое: {{ resumeFormData.generalQuestions.workingStyleOther }}
-      </p>
     </div>
 
     <div v-if="resumeFormData.generalQuestions.workingCollective" class="mb-4">
@@ -194,10 +193,23 @@ const getOptionLabel = (
           :key="index"
         >
           {{ getOptionLabel(PROFESSIONAL_GROWTH_OPPORTUNITIES_OPTIONS, style) }}
+          <span
+            v-if="
+              getOptionLabel(
+                PROFESSIONAL_GROWTH_OPPORTUNITIES_OPTIONS,
+                style,
+              ) === 'Другое'
+            "
+          >
+            -
+            {{
+              resumeFormData.generalQuestions
+                .professionalGrowthOpportunitiesOther
+            }}
+          </span>
         </li>
       </ul>
     </div>
-    <!-- todo: other opportunities -->
 
     <div v-if="resumeFormData.generalQuestions.workChallenge" class="mb-4">
       <h3 class="font-medium text-gray-800 mb-1">Сложные рабочие ситуации:</h3>

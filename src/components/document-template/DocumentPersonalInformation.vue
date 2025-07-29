@@ -16,50 +16,80 @@ defineProps<{
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <p>
-          <span class="font-medium text-gray-700">Дата рождения:</span>
-          {{ resumeFormData.personalData.birthDate }}
+          <span class="font-medium text-gray-700">Дата рождения:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.birthDate }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Место рождения:</span>
-          {{ resumeFormData.personalData.birthPlace }}
+          <span class="font-medium text-gray-700">Место рождения:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.birthPlace }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Гражданство:</span>
-          {{ resumeFormData.personalData.citizenship }}
+          <span class="font-medium text-gray-700">Гражданство:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.citizenship }}
+          </span>
         </p>
         <p v-if="resumeFormData.personalData.fullNameChangeReason">
-          <span class="font-medium text-gray-700">Причина смены ФИО:</span>
-          {{ resumeFormData.personalData.fullNameChangeReason }}
+          <span class="font-medium text-gray-700">
+            Причина смены ФИО:&nbsp;
+          </span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.fullNameChangeReason }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">ИНН:</span>
-          {{ resumeFormData.personalData.inn }}
+          <span class="font-medium text-gray-700">ИНН:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.inn }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">СНИЛС:</span>
-          {{ resumeFormData.personalData.snils }}
+          <span class="font-medium text-gray-700">СНИЛС:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.snils }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Воинская служба:</span>
-          {{ resumeFormData.personalData.militaryService }}
+          <span class="font-medium text-gray-700">Воинская служба:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.militaryService }}
+          </span>
         </p>
       </div>
       <div>
         <p>
-          <span class="font-medium text-gray-700">Паспорт:</span>
-          {{ resumeFormData.personalData.passport }}
+          <span class="font-medium text-gray-700">Паспорт:&nbsp;</span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.passport }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Дата выдачи паспорта:</span>
-          {{ resumeFormData.personalData.passportDate }}
+          <span class="font-medium text-gray-700">
+            Дата выдачи паспорта:&nbsp;
+          </span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.passportDate }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Кем выдан паспорт:</span>
-          {{ resumeFormData.personalData.passportFrom }}
+          <span class="font-medium text-gray-700">
+            Кем выдан паспорт:&nbsp;
+          </span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.passportFrom }}
+          </span>
         </p>
         <p>
-          <span class="font-medium text-gray-700">Адрес регистрации:</span>
-          {{ resumeFormData.personalData.registrationAddress }}
+          <span class="font-medium text-gray-700">
+            Адрес регистрации:&nbsp;
+          </span>
+          <span class="text-gray-900">
+            {{ resumeFormData.personalData.registrationAddress }}
+          </span>
         </p>
       </div>
     </div>

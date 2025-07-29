@@ -1,17 +1,38 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed, onBeforeUnmount } from "vue";
+import { useField } from "vee-validate";
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024;
+defineOptions({
+  inheritAttrs: false,
+});
 
-const model = defineModel<File | string | null>();
+const props = defineProps<{
+  name: string;
+  label?: string;
+}>();
+
+const attrs = useAttrs();
+const formItemClass = computed(() => attrs.class);
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const previewUrl = ref<string>("");
-const errorMsg = ref<string>("");
 let previousObjectUrl: string | null = null;
 
+const {
+  value,
+  errorMessage: _errorMessage,
+  handleChange,
+} = useField<File | string | null>(
+  () => props.name,
+  {},
+  {
+    initialValue: null,
+    validateOnMount: false,
+  },
+);
+
 watch(
-  () => model.value,
+  () => value.value,
   (newVal) => {
     if (previousObjectUrl) {
       URL.revokeObjectURL(previousObjectUrl);
@@ -38,47 +59,59 @@ const triggerSelect = () => fileInput.value?.click();
 const onFileChange = (e: Event) => {
   const input = e.target as HTMLInputElement;
   const file = input.files?.[0];
-  if (!file) return;
-
-  if (file.size > MAX_FILE_SIZE) {
-    errorMsg.value = `Размер файла превышает ${Math.round(MAX_FILE_SIZE / 1024 / 1024)} МБ`;
+  if (!file) {
     return;
   }
 
-  errorMsg.value = "";
-  model.value = file;
+  // This will trigger vee-validate validation
+  handleChange(file, false); // false to not validate on change (let form submission handle it)
 };
+
+onBeforeUnmount(() => {
+  if (previousObjectUrl) {
+    URL.revokeObjectURL(previousObjectUrl);
+  }
+});
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-2">
-    <input
-      ref="fileInput"
-      type="file"
-      accept="image/*"
-      class="hidden"
-      @change="onFileChange"
-    />
+  <FormField v-slot="{ errorMessage: fieldError }" :name="name">
+    <FormItem :class="formItemClass">
+      <FormLabel v-if="label">{{ label }}</FormLabel>
+      <FormControl>
+        <div class="flex flex-col items-center gap-2">
+          <input
+            ref="fileInput"
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            class="hidden"
+            v-bind="$attrs"
+            @change="onFileChange"
+          />
 
-    <div
-      class="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group"
-      @click="triggerSelect"
-    >
-      <img
-        v-if="previewUrl"
-        :src="previewUrl"
-        alt="avatar preview"
-        class="w-full h-full object-cover"
-      />
-      <IconUser v-else class="w-full h-full" />
+          <div
+            class="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group"
+            @click="triggerSelect"
+          >
+            <img
+              v-if="previewUrl"
+              :src="previewUrl"
+              alt="avatar preview"
+              class="w-full h-full object-cover"
+            />
+            <IconUser v-else class="w-full h-full" />
 
-      <div
-        class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <IconCamera class="text-white w-6 h-6" />
-      </div>
-    </div>
-
-    <p v-if="errorMsg" class="text-sm text-red-500">{{ errorMsg }}</p>
-  </div>
+            <div
+              class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <IconCamera class="text-white w-6 h-6" />
+            </div>
+          </div>
+        </div>
+      </FormControl>
+      <FormMessage v-if="fieldError" class="text-center">
+        {{ fieldError }}
+      </FormMessage>
+    </FormItem>
+  </FormField>
 </template>

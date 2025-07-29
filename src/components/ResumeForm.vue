@@ -39,7 +39,6 @@ const handleFormSubmit = handleSubmit(
     });
 
     if (formAction.value === "pdf") {
-      console.log(documentTemplateRef.value);
       documentTemplateRef.value?.saveToPdf(values);
     }
 
@@ -85,7 +84,7 @@ onMounted(() => {
 <template>
   <form class="space-y-6 py-4" @submit.prevent>
     <p class="text-2xl text-center">Анкета Кандидата</p>
-    <FormCandidatePhoto />
+    <FormCandidatePhoto name="candidateData.photo" />
     <FormCandidateDataSection />
     <FormPersonalDataSection />
     <FormEducationSection />
