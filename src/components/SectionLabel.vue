@@ -4,12 +4,14 @@ interface Props {
   label: string;
 }
 
+const asd = "asd";
+
 const props = defineProps<Props>();
 </script>
 
 <template>
   <div>
-        <p class="text-lg">{{ props.label }}</p>
+    <p class="text-lg">{{ props.label }}</p>
     <Separator />
   </div>
 </template>
