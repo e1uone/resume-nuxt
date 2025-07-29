@@ -9,7 +9,7 @@ const props = defineProps<Props>();
 
 <template>
   <div>
-    <p class="text-lg">{{ props.label }}</p>
+        <p class="text-lg">{{ props.label }}</p>
     <Separator />
   </div>
 </template>
