@@ -89,7 +89,7 @@ defineExpose({ saveToPdf, print, saveDocx });
 <template>
   <div
     ref="resumeTemplateRef"
-    class="resume-template w-[210mm] max-w-[100%] min-h-[297mm] mx-auto bg-white shadow-lg"
+    class="resume-template hidden w-[210mm] max-w-[100%] min-h-[297mm] mx-auto bg-white shadow-lg"
   >
     <template v-if="resumeFormData">
       <DocumentHeaderSection :resume-form-data="resumeFormData" />
