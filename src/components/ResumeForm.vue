@@ -42,10 +42,6 @@ const handleFormSubmit = handleSubmit(
       documentTemplateRef.value?.saveToPdf(values);
     }
 
-    // if (formAction.value === "word") {
-    //   documentTemplateRef.value?.saveDocx(values);
-    // }
-
     // if (formAction.value === "print") {
     //   documentTemplateRef.value?.print(values);
     // }

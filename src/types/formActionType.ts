@@ -1,1 +1,1 @@
-export type FormActionType = "pdf" | "word" | "print" | "reset";
+export type FormActionType = "pdf" | "print" | "reset";
