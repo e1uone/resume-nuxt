@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import IconLight from "./icons/Light.vue";
+import IconDark from "./icons/Dark.vue";
+
 const colorMode = useColorMode();
 
 const toggleTheme = () => {
@@ -11,12 +14,14 @@ const toggleTheme = () => {
     <KCGLogo />
     <Button
       variant="ghost"
-      size="sm"
+      size="lg"
       aria-label="Toggle theme"
       @click="toggleTheme"
     >
-      <IconLight v-if="colorMode.value === 'dark'" />
-      <IconDark v-else />
+      <component
+        :is="colorMode.value === 'dark' ? IconLight : IconDark"
+        class="size-5"
+      />
     </Button>
   </header>
 </template>
