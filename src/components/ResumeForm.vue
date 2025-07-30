@@ -15,22 +15,38 @@ const config = useRuntimeConfig();
 const isDevMode = config.app.buildId === "dev";
 const debugMode = ref<boolean>(localStorage.getItem("debugMode") === "true");
 
+const formActionsRef = useTemplateRef<typeof FormActions>("formActionsRef");
 const documentTemplateRef = useTemplateRef<typeof DocumentTemplate>(
   "documentTemplateRef",
 );
 
-const formActionsRef = useTemplateRef<typeof FormActions>("formActionsRef");
-
 const formSchema = toTypedSchema(RESUME_FORM_SCHEMA);
-
 const formAction = ref<FormActionType>();
 
-const { resetForm, handleSubmit } = useForm({
-  validationSchema: formSchema,
-  initialValues: debugMode.value
-    ? DEBUG_INITIAL_VALUES
-    : RESUME_FORM_INITIAL_VALUES,
+const savedValues = debugMode.value
+  ? DEBUG_INITIAL_VALUES
+  : JSON.parse(localStorage.getItem("formValues") || "null");
+
+const initialValues = computed(() => {
+  return savedValues ?? RESUME_FORM_INITIAL_VALUES;
 });
+
+const {
+  resetForm,
+  handleSubmit,
+  values: formValues,
+} = useForm({
+  validationSchema: formSchema,
+  initialValues: initialValues.value,
+});
+
+watch(
+  formValues,
+  () => {
+    localStorage.setItem("formValues", JSON.stringify(formValues));
+  },
+  { deep: true },
+);
 
 const handleFormSubmit = handleSubmit(
   (values) => {
@@ -54,9 +70,20 @@ const handleFormSubmit = handleSubmit(
   },
 );
 
-const handleFormAction = (action: FormActionType) => {
+const resetFormValues = async () => {
+  localStorage.removeItem("formValues");
+  // Resetting form with array fields causes vee-validate warnings
+  // and scroll position issues. Using nextTick() ensures scroll to top
+  // after the form reset completes.
+  resetForm({ values: RESUME_FORM_INITIAL_VALUES }, { force: true });
+
+  await nextTick();
+  window.scrollTo({ top: 0 });
+};
+
+const handleFormAction = async (action: FormActionType) => {
   if (action === "reset") {
-    resetForm();
+    resetFormValues();
   } else {
     formAction.value = action;
     handleFormSubmit();
