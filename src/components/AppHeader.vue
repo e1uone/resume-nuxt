@@ -2,7 +2,7 @@
 const colorMode = useColorMode();
 
 const toggleTheme = () => {
-  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
+  colorMode.preference = colorMode.value === "light" ? "dark" : "light";
 };
 </script>
 
@@ -15,7 +15,7 @@ const toggleTheme = () => {
       aria-label="Toggle theme"
       @click="toggleTheme"
     >
-      <IconLight v-if="colorMode.preference === 'dark'" />
+      <IconLight v-if="colorMode.value === 'dark'" />
       <IconDark v-else />
     </Button>
   </header>

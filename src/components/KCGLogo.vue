@@ -5,7 +5,7 @@ import KCGLogoLight from "@/assets/img/kcg-logo-full-light.png";
 const colorMode = useColorMode();
 
 const logo = computed(() => {
-  return colorMode.preference === "light" ? KCGLogoDark : KCGLogoLight;
+  return colorMode.value === "light" ? KCGLogoDark : KCGLogoLight;
 });
 </script>
 
