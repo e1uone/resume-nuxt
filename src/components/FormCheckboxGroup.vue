@@ -13,7 +13,7 @@ defineProps<{
         <FormLabel v-if="label">
           {{ label }}
         </FormLabel>
-        <FormDescription v-if="description">
+        <FormDescription v-if="description" class="text-xs">
           {{ description }}
         </FormDescription>
       </div>
