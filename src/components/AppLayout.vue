@@ -2,7 +2,7 @@
 <template>
   <AppHeader />
   <div
-    class="app-layout w-full mx-auto px-4 py-4 sm:px-6 md:px-8 sm:max-w-2xl md:max-w-3xl"
+    class="app-layout w-full mx-auto px-4 py-4 sm:px-6 md:px-8 sm:max-w-2xl md:max-w-3xl pt-16"
   >
     <slot />
   </div>
