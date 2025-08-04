@@ -46,6 +46,8 @@ const {
           label="Дата рождения"
           placeholder="Дата рождения"
           :name="`familyMembers.${index}.birthDate`"
+          mask="##.##.####"
+          use-masked-value
         />
         <FormInput
           label="Место работы"
@@ -61,6 +63,7 @@ const {
           label="Телефон"
           placeholder="Телефон"
           :name="`familyMembers.${index}.phoneNumber`"
+          mask="+7 (###) ###-##-##"
         />
         <FormInput
           label="Адрес"

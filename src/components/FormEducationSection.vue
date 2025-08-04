@@ -46,11 +46,13 @@ const {
           label="Год поступления"
           placeholder="Год поступления"
           :name="`education.${index}.yearOfAdmission`"
+          mask="####"
         />
         <FormInput
           label="Год окончания"
           placeholder="Год окончания"
           :name="`education.${index}.yearOfGraduation`"
+          mask="####"
         />
       </FormCard>
 

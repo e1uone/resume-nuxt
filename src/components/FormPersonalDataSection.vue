@@ -16,6 +16,8 @@ const militaryServiceOptions = [
         placeholder="Дата рождения:"
         name="personalData.birthDate"
         class="md:col-span-1"
+        mask="##.##.####"
+        use-masked-value
       />
       <FormInput
         label="Место рождения:"
@@ -39,11 +41,14 @@ const militaryServiceOptions = [
         label="Паспорт (серия, номер):"
         placeholder="Паспорт (серия, номер):"
         name="personalData.passport"
+        mask="## ## ######"
       />
       <FormInput
         label="Дата выдачи:"
         placeholder="Дата выдачи:"
         name="personalData.passportDate"
+        mask="##.##.####"
+        use-masked-value
       />
       <FormInput
         label="Кем выдан:"
@@ -54,6 +59,7 @@ const militaryServiceOptions = [
         label="ИНН:"
         placeholder="ИНН:"
         name="personalData.inn"
+        mask="############"
         class="md:col-span-2"
       />
       <FormInput
@@ -61,6 +67,7 @@ const militaryServiceOptions = [
         placeholder="СНИЛС:"
         name="personalData.snils"
         class="md:col-span-1"
+        mask="### ### ### ##"
       />
       <FormSelect
         label="Отношение к воинской обязанности и воинское звание:"

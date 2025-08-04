@@ -9,7 +9,7 @@ defineProps<{
 <template>
   <FormField :name="name" type="checkbox">
     <FormItem>
-      <div>
+      <div class="mb-2">
         <FormLabel v-if="label">
           {{ label }}
         </FormLabel>

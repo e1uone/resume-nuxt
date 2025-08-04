@@ -53,7 +53,6 @@ onMounted(() => {
 <template>
   <FormItem v-auto-animate :class="formItemClass">
     <FormLabel>{{ label }}</FormLabel>
-    {{ inputValue }}
     <FormControl>
       <Input
         v-maska="maskaOptions"

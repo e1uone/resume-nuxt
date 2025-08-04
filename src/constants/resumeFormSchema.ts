@@ -1,5 +1,12 @@
 import { z } from "~/utils/zod";
-import { dateValidator, fileValidator } from "~/utils/validators";
+import {
+  dateValidator,
+  fileValidator,
+  innValidator,
+  validateSNILS,
+  isValidYear,
+  isValidFutureYear,
+} from "~/utils/validators";
 
 export const RESUME_FORM_SCHEMA = z.object({
   candidateData: z.object({
@@ -19,63 +26,85 @@ export const RESUME_FORM_SCHEMA = z.object({
   }),
 
   personalData: z.object({
-    birthDate: z.string().max(50).refine(dateValidator, "Неверная дата"),
+    birthDate: z.string().refine(dateValidator, "Неверная дата"),
     birthPlace: z.string().max(50),
     citizenship: z.string().max(50),
     fullNameChangeReason: z.string().max(50).optional(),
-    passport: z.string().max(50),
-    passportDate: z.string().max(50).refine(dateValidator, "Неверная дата"),
+    passport: z.string().min(10).max(10),
+    passportDate: z.string().refine(dateValidator, "Неверная дата"),
     passportFrom: z.string().max(50),
-    inn: z.string().max(50),
-    snils: z.string().max(50),
-    militaryService: z.string().max(50),
+    inn: z.string().refine(innValidator, "Неверный ИНН"),
+    snils: z.string().refine(validateSNILS, "Неверный СНИЛС"),
+    militaryService: z.string(),
     registrationAddress: z.string().max(50),
     factAddress: z.string().max(50),
   }),
 
   education: z
     .array(
-      z.object({
-        yearOfAdmission: z.string().min(1, "Обязательное поле").max(50),
-        yearOfGraduation: z.string().min(1, "Обязательное поле").max(50),
-        university: z.string().min(1, "Обязательное поле").max(50),
-        specialization: z.string().min(1, "Обязательное поле").max(50),
-      }),
+      z
+        .object({
+          yearOfAdmission: z
+            .string()
+            .refine((val) => isValidYear(val), "Неверный год"),
+          yearOfGraduation: z
+            .string()
+            .refine((val) => isValidFutureYear(val), "Неверный год"),
+          university: z.string().min(1, "Обязательное поле").max(100),
+          specialization: z.string().min(1, "Обязательное поле").max(100),
+        })
+        .refine(
+          (data) => {
+            if (!data.yearOfAdmission || !data.yearOfGraduation) {
+              return true;
+            }
+            return (
+              Number(data.yearOfGraduation) >= Number(data.yearOfAdmission)
+            );
+          },
+          {
+            message:
+              "Год окончания должен быть больше или равен году поступления",
+            path: ["yearOfGraduation"],
+          },
+        ),
     )
     .min(1, "Добавьте хотя бы одно образование"),
-  additionalEducation: z.string().max(500),
-  foreignLanguage: z.string().max(50),
+  additionalEducation: z.string().max(500).optional(),
+  foreignLanguage: z.string().max(500).optional(),
 
   workExperience: z.array(
-    z.object({
-      startDate: z
-        .string()
-        .min(1, "Обязательное поле")
-        .max(50)
-        .refine(dateValidator, "Неверная дата"),
-      endDate: z
-        .string()
-        .min(1, "Обязательное поле")
-        .max(50)
-        .refine(dateValidator, "Неверная дата"),
-      organization: z.string().min(1, "Обязательное поле").max(50),
-      position: z.string().min(1, "Обязательное поле").max(50),
-      address: z.string().min(1, "Обязательное поле").max(50),
-    }),
+    z
+      .object({
+        startDate: z.string().refine(dateValidator, "Неверная дата"),
+        endDate: z.string().refine(dateValidator, "Неверная дата"),
+        organization: z.string().min(1, "Обязательное поле").max(100),
+        position: z.string().min(1, "Обязательное поле").max(100),
+        address: z.string().min(1, "Обязательное поле").max(100),
+      })
+      .refine(
+        (data) => {
+          if (!data.startDate || !data.endDate) {
+            return true;
+          }
+          return new Date(data.startDate) < new Date(data.endDate);
+        },
+        {
+          message: "Дата окончания должна быть больше даты начала",
+          path: ["endDate"],
+        },
+      ),
   ),
+
   familyMembers: z.array(
     z.object({
       relativeDegree: z.string().min(1, "Обязательное поле").max(50),
       fullName: z.string().min(1, "Обязательное поле").max(50),
-      birthDate: z
-        .string()
-        .min(1, "Обязательное поле")
-        .max(50)
-        .refine(dateValidator, "Неверная дата"),
-      workPlace: z.string().min(1, "Обязательное поле").max(50),
-      position: z.string().min(1, "Обязательное поле").max(50),
-      phoneNumber: z.string().min(1, "Обязательное поле").max(50),
-      address: z.string().min(1, "Обязательное поле").max(50),
+      birthDate: z.string().refine(dateValidator, "Неверная дата"),
+      workPlace: z.string().min(1, "Обязательное поле").max(100),
+      position: z.string().min(1, "Обязательное поле").max(100),
+      phoneNumber: z.string().min(10).max(10),
+      address: z.string().min(1, "Обязательное поле").max(100),
     }),
   ),
   generalQuestions: z.object({

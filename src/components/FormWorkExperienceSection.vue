@@ -51,11 +51,15 @@ const {
           label="Дата начала"
           placeholder="Дата начала"
           :name="`workExperience.${index}.startDate`"
+          mask="##.##.####"
+          use-masked-value
         />
         <FormInput
           label="Дата окончания"
           placeholder="Дата окончания"
           :name="`workExperience.${index}.endDate`"
+          mask="##.##.####"
+          use-masked-value
         />
       </FormCard>
       <Button
