@@ -23,6 +23,7 @@
       label="Номер телефона"
       placeholder="Номер телефона"
       name="candidateData.phoneNumber"
+      mask="+7 (###) ###-##-##"
       class="md:col-span-1"
     />
     <FormInput

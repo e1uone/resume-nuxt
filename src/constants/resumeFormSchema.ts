@@ -1,20 +1,5 @@
 import { z } from "~/utils/zod";
-
-// PDF size is not dependent on image size
-// const MAX_FILE_SIZE = 1024 * 1024 * 5;
-const ACCEPTED_IMAGE_MIME_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-const dateValidator = (value: string) => {
-  const date = new Date(value);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return !isNaN(date.getTime()) && date < today;
-};
+import { dateValidator, fileValidator } from "~/utils/validators";
 
 export const RESUME_FORM_SCHEMA = z.object({
   candidateData: z.object({
@@ -22,17 +7,13 @@ export const RESUME_FORM_SCHEMA = z.object({
     firstName: z.string().max(50),
     surname: z.string().max(50),
     candidate: z.string().max(50),
-    phoneNumber: z.string().max(50),
+    phoneNumber: z.string().min(10).max(10),
     email: z.string().max(50).email(),
     photo: z
       .any()
       .optional()
-      // .refine(
-      //   (file) => !file || file.size <= MAX_FILE_SIZE,
-      //   `Максимальный размер картинки 5MByte.`,
-      // )
       .refine(
-        (file) => !file || ACCEPTED_IMAGE_MIME_TYPES.includes(file.type),
+        fileValidator,
         "Поддерживаются только .jpg, .jpeg, .png и .webp форматы.",
       ),
   }),

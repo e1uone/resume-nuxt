@@ -4,7 +4,7 @@ export const DEBUG_INITIAL_VALUES = {
     firstName: "Иван",
     surname: "Иванович",
     candidate: "Иванов Иван Иванович",
-    phoneNumber: "+7 (999) 123-45-67",
+    phoneNumber: "9991234567",
     email: "ivanov@example.com",
   },
 
@@ -85,7 +85,7 @@ export const DEBUG_INITIAL_VALUES = {
       birthDate: "15.05.1992",
       workPlace: 'ООО "МаркетингПро"',
       position: "Маркетолог",
-      phoneNumber: "+7 (999) 987-65-43",
+      phoneNumber: "9999876543",
       address: "г. Москва, ул. Ленина, д. 1, кв. 1",
     },
   ],

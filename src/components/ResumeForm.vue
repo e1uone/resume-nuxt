@@ -76,6 +76,7 @@ const resetFormValues = async () => {
   // and scroll position issues. Using nextTick() ensures scroll to top
   // after the form reset completes.
   resetForm({ values: RESUME_FORM_INITIAL_VALUES }, { force: true });
+  useEvent("form:reset");
 
   await nextTick();
   window.scrollTo({ top: 0 });

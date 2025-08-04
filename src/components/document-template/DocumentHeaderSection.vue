@@ -18,6 +18,15 @@ onBeforeUnmount(() => {
   }
   URL.revokeObjectURL(candidatePhoto.value);
 });
+
+const formattedPhoneNumber = computed(() => {
+  if (!props.resumeFormData.candidateData.phoneNumber) {
+    return null;
+  }
+
+  // Format phone to +7 (977) 816-65-41
+  return `+7 (${props.resumeFormData.candidateData.phoneNumber.slice(0, 3)}) ${props.resumeFormData.candidateData.phoneNumber.slice(3, 6)}-${props.resumeFormData.candidateData.phoneNumber.slice(6, 8)}-${props.resumeFormData.candidateData.phoneNumber.slice(8, 10)}`;
+});
 </script>
 
 <template>
@@ -39,12 +48,9 @@ onBeforeUnmount(() => {
     </h1>
 
     <div class="flex justify-center flex-wrap gap-4 mt-2">
-      <div
-        v-if="resumeFormData.candidateData.phoneNumber"
-        class="flex items-center text-gray-900"
-      >
+      <div v-if="formattedPhoneNumber" class="flex items-center text-gray-900">
         <span class="mr-1 text-gray-900">📱</span>
-        {{ resumeFormData.candidateData.phoneNumber }}
+        {{ formattedPhoneNumber }}
       </div>
       <div
         v-if="resumeFormData.candidateData.email"
