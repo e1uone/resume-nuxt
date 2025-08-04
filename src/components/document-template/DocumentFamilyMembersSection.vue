@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { ResumeFormData } from "~/types/resumeFormData";
+import { formatPhoneNumber } from "~/utils/formatPhoneNumber";
+
 defineProps<{
   resumeFormData: ResumeFormData;
 }>();
@@ -37,7 +39,7 @@ defineProps<{
           </p>
           <p class="text-sm text-gray-700">
             <span class="font-medium">Телефон:</span>
-            {{ member.phoneNumber }}
+            {{ formatPhoneNumber(member.phoneNumber) }}
           </p>
           <p class="text-sm text-gray-700">
             <span class="font-medium">Адрес:</span>
