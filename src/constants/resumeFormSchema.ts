@@ -9,6 +9,13 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/webp",
 ];
 
+const dateValidator = (value: string) => {
+  const date = new Date(value);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return !isNaN(date.getTime()) && date < today;
+};
+
 export const RESUME_FORM_SCHEMA = z.object({
   candidateData: z.object({
     lastName: z.string().max(50),
@@ -16,7 +23,7 @@ export const RESUME_FORM_SCHEMA = z.object({
     surname: z.string().max(50),
     candidate: z.string().max(50),
     phoneNumber: z.string().max(50),
-    email: z.string().max(50),
+    email: z.string().max(50).email(),
     photo: z
       .any()
       .optional()
@@ -31,12 +38,12 @@ export const RESUME_FORM_SCHEMA = z.object({
   }),
 
   personalData: z.object({
-    birthDate: z.string().max(50),
+    birthDate: z.string().max(50).refine(dateValidator, "Неверная дата"),
     birthPlace: z.string().max(50),
     citizenship: z.string().max(50),
     fullNameChangeReason: z.string().max(50).optional(),
     passport: z.string().max(50),
-    passportDate: z.string().max(50),
+    passportDate: z.string().max(50).refine(dateValidator, "Неверная дата"),
     passportFrom: z.string().max(50),
     inn: z.string().max(50),
     snils: z.string().max(50),
@@ -60,8 +67,16 @@ export const RESUME_FORM_SCHEMA = z.object({
 
   workExperience: z.array(
     z.object({
-      startDate: z.string().min(1, "Обязательное поле").max(50),
-      endDate: z.string().min(1, "Обязательное поле").max(50),
+      startDate: z
+        .string()
+        .min(1, "Обязательное поле")
+        .max(50)
+        .refine(dateValidator, "Неверная дата"),
+      endDate: z
+        .string()
+        .min(1, "Обязательное поле")
+        .max(50)
+        .refine(dateValidator, "Неверная дата"),
       organization: z.string().min(1, "Обязательное поле").max(50),
       position: z.string().min(1, "Обязательное поле").max(50),
       address: z.string().min(1, "Обязательное поле").max(50),
@@ -71,7 +86,11 @@ export const RESUME_FORM_SCHEMA = z.object({
     z.object({
       relativeDegree: z.string().min(1, "Обязательное поле").max(50),
       fullName: z.string().min(1, "Обязательное поле").max(50),
-      birthDate: z.string().min(1, "Обязательное поле").max(50),
+      birthDate: z
+        .string()
+        .min(1, "Обязательное поле")
+        .max(50)
+        .refine(dateValidator, "Неверная дата"),
       workPlace: z.string().min(1, "Обязательное поле").max(50),
       position: z.string().min(1, "Обязательное поле").max(50),
       phoneNumber: z.string().min(1, "Обязательное поле").max(50),
