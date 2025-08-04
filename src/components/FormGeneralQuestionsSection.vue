@@ -118,7 +118,7 @@ const professionalGrowthOpportunities = useFieldValue<string>(
     />
 
     <FormCheckboxGroup
-      label="Какие возможности для профессионального роста важны для Вас? (выберите нужные)"
+      label="Какие возможности для профессионального роста важны для Вас?"
       description="(выберите нужные)"
       name="generalQuestions.professionalGrowthOpportunities"
       :options="PROFESSIONAL_GROWTH_OPPORTUNITIES_OPTIONS"
