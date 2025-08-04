@@ -7,7 +7,7 @@ import { PROGRAM_SKILLS_GENERAL_LEVEL_OPTIONS } from "~/constants/programSkillsG
     <SectionLabel label="Знание программ" />
 
     <div class="space-y-3">
-      <h3 class="text-md font-semibold text-gray-700">Microsoft Office</h3>
+      <h3 class="text-md font-semibold">Microsoft Office</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <FormSkillCard
           name="programSkills.wordLevel"
@@ -28,9 +28,7 @@ import { PROGRAM_SKILLS_GENERAL_LEVEL_OPTIONS } from "~/constants/programSkillsG
     </div>
 
     <div class="space-y-3">
-      <h3 class="text-md font-semibold text-gray-700">
-        Консультационные системы
-      </h3>
+      <h3 class="text-md font-semibold">Консультационные системы</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <FormSkillCard
           name="programSkills.consultantLevel"
@@ -47,9 +45,7 @@ import { PROGRAM_SKILLS_GENERAL_LEVEL_OPTIONS } from "~/constants/programSkillsG
     </div>
 
     <div class="space-y-3">
-      <h3 class="text-md font-semibold text-gray-700">
-        Программирование и базы данных
-      </h3>
+      <h3 class="text-md font-semibold">Программирование и базы данных</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <FormSkillCard
           name="programSkills.cppLevel"
@@ -70,7 +66,7 @@ import { PROGRAM_SKILLS_GENERAL_LEVEL_OPTIONS } from "~/constants/programSkillsG
     </div>
 
     <div class="space-y-3">
-      <h3 class="text-md font-semibold text-gray-700">Другие программы</h3>
+      <h3 class="text-md font-semibold">Другие программы</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <FormSkillCard
           name="programSkills.googleSheetsLevel"
