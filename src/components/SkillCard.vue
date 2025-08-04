@@ -23,7 +23,7 @@ const levelColor = computed(() => {
     case "3":
       return "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800";
     default:
-      return "bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800";
+      return "bg-gray-50 dark:bg-input/30 border-input dark:border-input";
   }
 });
 </script>
