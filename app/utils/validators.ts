@@ -7,6 +7,10 @@ export const dateValidator = (value: string) => {
 
   const [day, month, year] = value.split(".").map(Number);
 
+  if (!day || !month || !year) {
+    return false;
+  }
+
   if (month < 1 || month > 12) {
     return false;
   }
@@ -37,50 +41,73 @@ export const fileValidator = (file: File) => {
 
 const checkSumINN = {
   business(inn: number[]): boolean {
-    return (
-      inn.length === 10 &&
-      inn[9] ===
-        ((2 * inn[0] +
-          4 * inn[1] +
-          10 * inn[2] +
-          3 * inn[3] +
-          5 * inn[4] +
-          9 * inn[5] +
-          4 * inn[6] +
-          6 * inn[7] +
-          8 * inn[8]) %
-          11) %
-          10
-    );
+    if (inn.length !== 10) {
+      return false;
+    }
+
+    // prettier-ignore
+    const [
+      n0, n1, n2, n3, n4,
+      n5, n6, n7, n8, n9
+    ] = inn as [
+      number, number, number, number, number,
+      number, number, number, number, number
+    ];
+    const checksum =
+      ((2 * n0 +
+        4 * n1 +
+        10 * n2 +
+        3 * n3 +
+        5 * n4 +
+        9 * n5 +
+        4 * n6 +
+        6 * n7 +
+        8 * n8) %
+        11) %
+      10;
+
+    return n9 === checksum;
   },
   entrepreneur(inn: number[]): boolean {
+    if (inn.length !== 12) {
+      return false;
+    }
+    // prettier-ignore
+    const [
+      n0, n1, n2, n3, n4,
+      n5, n6, n7, n8, n9, n10, n11
+    ] = inn as [
+      number, number, number, number, number,
+      number, number, number, number, number,
+      number, number
+    ];
+
     return (
-      inn.length === 12 &&
-      inn[10] ===
-        ((7 * inn[0] +
-          2 * inn[1] +
-          4 * inn[2] +
-          10 * inn[3] +
-          3 * inn[4] +
-          5 * inn[5] +
-          9 * inn[6] +
-          4 * inn[7] +
-          6 * inn[8] +
-          8 * inn[9]) %
+      n10 ===
+        ((7 * n0 +
+          2 * n1 +
+          4 * n2 +
+          10 * n3 +
+          3 * n4 +
+          5 * n5 +
+          9 * n6 +
+          4 * n7 +
+          6 * n8 +
+          8 * n9) %
           11) %
           10 &&
-      inn[11] ===
-        ((3 * inn[0] +
-          7 * inn[1] +
-          2 * inn[2] +
-          4 * inn[3] +
-          10 * inn[4] +
-          3 * inn[5] +
-          5 * inn[6] +
-          9 * inn[7] +
-          4 * inn[8] +
-          6 * inn[9] +
-          8 * inn[10]) %
+      n11 ===
+        ((3 * n0 +
+          7 * n1 +
+          2 * n2 +
+          4 * n3 +
+          10 * n4 +
+          3 * n5 +
+          5 * n6 +
+          9 * n7 +
+          4 * n8 +
+          6 * n9 +
+          8 * n10) %
           11) %
           10
     );

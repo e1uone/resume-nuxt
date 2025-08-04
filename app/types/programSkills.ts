@@ -1,4 +1,4 @@
-import type { SkillLevel } from "./skillLevel.ts";
+import type { SkillLevel } from "./skillLevel";
 
 export interface ProgramSkills {
   wordLevel: SkillLevel;

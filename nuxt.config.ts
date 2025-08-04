@@ -5,7 +5,6 @@ import { resolve } from "path";
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
-  srcDir: "src/",
   ssr: false,
   modules: [
     "shadcn-nuxt",
@@ -34,7 +33,7 @@ export default defineNuxtConfig({
      * Directory that the component lives in.
      * @default "./components/ui"
      */
-    componentDir: "./src/components/ui",
+    componentDir: "./app/components/ui",
   },
   components: [
     { path: "~/components", pathPrefix: false },
