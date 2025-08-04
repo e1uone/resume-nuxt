@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   name: string;
   options: { value: string; label: string }[];
   label?: string;
@@ -7,14 +7,14 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <FormField :name="props.name" type="checkbox">
+  <FormField :name="name" type="checkbox">
     <FormItem>
-      <div class="mb-4">
-        <FormLabel v-if="props.label" class="text-base">
-          {{ props.label }}
+      <div>
+        <FormLabel v-if="label" class="text-base">
+          {{ label }}
         </FormLabel>
-        <FormDescription v-if="props.description">
-          {{ props.description }}
+        <FormDescription v-if="description">
+          {{ description }}
         </FormDescription>
       </div>
 
@@ -25,7 +25,7 @@ const props = defineProps<{
         type="checkbox"
         :value="option.value"
         :unchecked-value="false"
-        :name="props.name"
+        :name="name"
       >
         <FormItem class="flex flex-row options-start space-x-3 space-y-0">
           <FormControl>

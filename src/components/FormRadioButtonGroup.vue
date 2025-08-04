@@ -3,6 +3,7 @@ defineProps<{
   label: string;
   name: string;
   options: Array<{ value: string; label: string }>;
+  description?: string;
 }>();
 
 defineOptions({
@@ -21,8 +22,15 @@ const radioGroupAttrs = computed(() => {
 
 <template>
   <FormField v-slot="{ componentField }" type="radio" :name="name">
-    <FormItem :class="formItemClass">
-      <FormLabel>{{ label }}</FormLabel>
+    <FormItem :class="formItemClass" class="grid gap-2">
+      <div>
+        <FormLabel v-if="label" class="text-base">
+          {{ label }}
+        </FormLabel>
+        <FormDescription v-if="description">
+          {{ description }}
+        </FormDescription>
+      </div>
 
       <FormControl>
         <RadioGroup
