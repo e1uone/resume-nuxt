@@ -10,7 +10,7 @@ defineProps<{
   <FormField :name="name" type="checkbox">
     <FormItem>
       <div>
-        <FormLabel v-if="label" class="text-base">
+        <FormLabel v-if="label">
           {{ label }}
         </FormLabel>
         <FormDescription v-if="description">

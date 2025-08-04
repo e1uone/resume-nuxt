@@ -24,7 +24,7 @@ const radioGroupAttrs = computed(() => {
   <FormField v-slot="{ componentField }" type="radio" :name="name">
     <FormItem :class="formItemClass" class="grid gap-2">
       <div>
-        <FormLabel v-if="label" class="text-base">
+        <FormLabel v-if="label">
           {{ label }}
         </FormLabel>
         <FormDescription v-if="description">
